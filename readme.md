@@ -37,3 +37,17 @@ SELECT original_url FROM urls WHERE short_code = '<code>';
 - Indexed lookups keep short_code reads fast (<1ms)
 - System handles ~10K req/sec on single instance
 - Bottleneck is **write-heavy click logging**, not reads
+
+## Benchmark 2:
+
+- URLs: 1314349
+- Batched Click logging with in-memory queue
+
+```bash
+autocannon -c 100 -d 20 http://localhost:3000/:random_code
+```
+
+Key Observations:
+Req/sec: ~10,877
+Avg latency: ~8.68 ms
+p99: ~13 ms
