@@ -48,6 +48,7 @@ autocannon -c 100 -d 20 http://localhost:3000/:random_code
 ```
 
 Key Observations:
-Req/sec: ~10,877
-Avg latency: ~8.68 ms
-p99: ~13 ms
+
+- Req/sec: ~10,877
+- Avg latency: ~8.68 ms
+- p99: ~13 ms
