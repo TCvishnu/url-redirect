@@ -15,7 +15,7 @@ A high-throughput URL shortener built with Node.js and PostgreSQL, focused on pe
 - Non-blocking inline click logging
 
 ```bash
-autocannon -c 100 -d 20 http://localhost:3000/:random_code
+autocannon -c 100 -d 20 http://localhost:3000/:1000_random_codes
 ```
 
 Results:
@@ -40,11 +40,11 @@ SELECT original_url FROM urls WHERE short_code = '<code>';
 
 ## Benchmark 2:
 
-- URLs: 1314349
+- URLs: 1,314,349
 - Batched Click logging with in-memory queue
 
 ```bash
-autocannon -c 100 -d 20 http://localhost:3000/:random_code
+autocannon -c 100 -d 20 http://localhost:3000/:100_random_codes
 ```
 
 Key Observations:
@@ -52,3 +52,19 @@ Key Observations:
 - Req/sec: ~10,877
 - Avg latency: ~8.68 ms
 - p99: ~13 ms
+
+## Benchmark 3:
+
+added a redis cache.
+
+- URLs: 2,042,891
+
+```bash
+autocannon -c 100 -d 20 http://localhost:3000/:100_random_codes
+```
+
+Key Observations:
+
+- ~13,380 req/sec
+- ~6.88 ms avg
+- ~12 ms p99

@@ -10,7 +10,7 @@ async function getRandomCodes(limit = 1000) {
 }
 
 async function run() {
-  const codes = await getRandomCodes(1000);
+  const codes = await getRandomCodes(100);
 
   let i = 0;
 
