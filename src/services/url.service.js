@@ -2,6 +2,8 @@ const pool = require("../db/postgres");
 const encoder = require("./encoder");
 const BASE_URL = process.env.BASE_URL;
 
+const { enqueueClick } = require("../click-logger/click.worker");
+
 async function shortenUrl(originalUrl) {
   const oneWeekAfterToday = new Date();
   oneWeekAfterToday.setDate(oneWeekAfterToday.getDate() + 7);
@@ -59,13 +61,12 @@ async function getOriginalUrl(shortCode, referrer, deviceType, country) {
     return null;
   }
 
-  pool
-    .query(
-      `INSERT INTO clicks(short_code, country, device_type, referrer)
-     VALUES($1, $2, $3, $4)`,
-      [shortCode, country, deviceType, referrer],
-    )
-    .catch((err) => console.error("Click log failed:", err));
+  enqueueClick({
+    shortCode,
+    country,
+    deviceType,
+    referrer,
+  });
 
   return original_url;
 }
