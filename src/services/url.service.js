@@ -66,6 +66,7 @@ async function getOriginalUrl(shortCode, referrer, deviceType, country) {
     country,
     deviceType,
     referrer,
+    clickedAt: new Date(),
   });
 
   return original_url;
