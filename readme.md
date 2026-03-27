@@ -10,26 +10,27 @@ A high-throughput URL shortener built with Node.js and PostgreSQL, focused on pe
 
 ## Benchmark 1:
 
-- URLs: 513,071
+- URLs: 1,001,799
 - "urls_short_code_key" UNIQUE CONSTRAINT, btree (short_code).
 - Non-blocking inline click logging
 
 ```bash
-autocannon -c 100 -d 20 http://localhost:3000/:code
+autocannon -c 100 -d 20 http://localhost:3000/:random_code
 ```
 
 Results:
 
-- **~10,500 req/sec**
-- **~8.8 ms avg latency**
-- **~13 ms p99 latency**
+Requests/sec: ~10,310
+Avg latency: ~9.19 ms
+p99 latency: ~16 ms
+Total redirects: 206307 in 20s
 
 ```sql
 EXPLAIN ANALYZE
 SELECT original_url FROM urls WHERE short_code = '<code>';
 ```
 
-- ~0.8 ms execution time
+- ~0.7 ms execution time
 
 ### Key Observations
 
