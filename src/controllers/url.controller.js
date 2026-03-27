@@ -1,3 +1,6 @@
+const UAParser = require("ua-parser-js");
+const geoip = require("geoip-lite");
+
 const urlService = require("../services/url.service");
 
 async function shortenUrl(req, res) {
@@ -20,7 +23,20 @@ async function redirectUrl(req, res) {
   try {
     const { code } = req.params;
 
-    const originalUrl = await urlService.getOriginalUrl(code);
+    const referrer = req.get("referer") || "direct";
+    const parser = new UAParser(req.headers["user-agent"]);
+    const deviceType = parser.getDevice().type || "desktop";
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+    const geo = geoip.lookup(ip);
+    const country = geo?.country || "unknown";
+
+    const originalUrl = await urlService.getOriginalUrl(
+      code,
+      referrer,
+      deviceType,
+      country,
+    );
 
     if (!originalUrl) {
       return res.status(404).json({ error: "URL not found" });

@@ -41,9 +41,33 @@ async function shortenUrl(originalUrl) {
   }
 }
 
-async function getOriginalUrl(shortCode) {
-  // logic goes here later
-  return shortCode + ":hehehe";
+async function getOriginalUrl(shortCode, referrer, deviceType, country) {
+  const result = await pool.query(
+    `SELECT original_url, expires_at 
+     FROM urls 
+     WHERE short_code = $1`,
+    [shortCode],
+  );
+
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  const { original_url, expires_at } = result.rows[0];
+
+  if (expires_at && new Date(expires_at) < new Date()) {
+    return null;
+  }
+
+  pool
+    .query(
+      `INSERT INTO clicks(short_code, country, device_type, referrer)
+     VALUES($1, $2, $3, $4)`,
+      [shortCode, country, deviceType, referrer],
+    )
+    .catch((err) => console.error("Click log failed:", err));
+
+  return original_url;
 }
 
 module.exports = {
